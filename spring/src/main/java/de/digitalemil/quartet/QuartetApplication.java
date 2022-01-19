@@ -57,29 +57,28 @@ public class QuartetApplication {
 		return result;
 	}
 
-	private String get(String key, JSONObject jobj, String defaultstring) {
+	private String get(String key, JSONObject jobj, String defaultvalue) {
 		if(!jobj.has(key))
-			return defaultstring;
+			return defaultvalue;
 		else
 			return jobj.getString(key);
 	}
 
 	@PostMapping("/datasource")
 	public String datasource(@RequestBody String body) {
-		DataSource ds = null;
-		String type="", ip= "", user="", password="", dbname="", port="5433", endpoints="", poolsize="", geo="";
-
 		JSONObject jobj= new JSONObject(body);
 
-		type= get("type", jobj, "postgres");
-		ip = get("ip", jobj, "127.0.0.1");
-		user = get("user", jobj, "yugabyte");
-		password = get("password", jobj, "yugabyte");
-		dbname = get("dbname", jobj, "testdb");
-		port = get("port", jobj, "5433");
-		endpoints = get("endpoints", jobj, "");
-		poolsize= get("poolsize", jobj, "16");
-		geo= get("geo", jobj, "");
+		String type= get("type", jobj, "postgres");
+		String ip = get("ip", jobj, "127.0.0.1");
+		String user = get("user", jobj, "yugabyte");
+		String password = get("password", jobj, "yugabyte");
+		String dbname = get("dbname", jobj, "testdb");
+		String port = get("port", jobj, "5433");
+		String endpoints = get("endpoints", jobj, "");
+		String poolsize= get("poolsize", jobj, "16");
+		String geo= get("geo", jobj, "");
+
+		DataSource ds = null;
 
 		if (type.equals("postgres")) {
 			System.out.println("Using Postgres Driver.");
