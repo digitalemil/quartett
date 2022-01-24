@@ -15,18 +15,28 @@ def execute(request):
     sql= data["sql"]
 
     print("Execute: "+sql)
+    print("Connection: "+str(connection))
     
     cur = connection.cursor()
 
     cur.execute(sql)
-    
-    row = cur.fetchone()
-
+  
     result= ""
-    while row is not None:
-        result= result+ str(row)+"\n"
-        row = cur.fetchone()
     
+    print("Row count: "+str(cur.rowcount))
+
+    try: 
+        if cur.rowcount > 0:
+            row = cur.fetchone()
+
+            while row is not None:
+                result= result+ str(row)+"\n"
+                row = cur.fetchone()
+    except (RuntimeError, TypeError, NameError, psycopg2.ProgrammingError):
+        pass
+    
+    result= result+ cur.statusmessage
+
     print("Query returned: %s" % ( result ))
 
     cur.close()
