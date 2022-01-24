@@ -37,14 +37,27 @@ public class QuartetApplication {
 		String result= "";
 		try {
 			String sql= new JSONObject(body).getString("sql");
-			List<Map<String, Object>> res= jdbcTemplate.queryForList(sql);
-			for (int i = 0; i < res.size(); i++) {
+			List<Map<String, Object>> res= null;
+			try {
+				res= jdbcTemplate.queryForList(sql);
+			}
+			catch (Exception e) {
+
+			}
+			for (int i = 0; res!= null && i < res.size(); i++) {
 				Iterator<Object> le= res.get(i).values().iterator();
 			
 		        while (le.hasNext()) {
-					String value= le.next().toString();
-        			System.out.println("value= " + value);
-					result+= value;
+					String value= "";
+					try {
+						value= le.next().toString();
+						System.out.println("value= " + value);
+						result+= value;	
+					}
+					catch(Exception e) {
+					}
+        			if(le.hasNext())
+					result+= ", ";
         		}
 				result+= "\n";
 			}
