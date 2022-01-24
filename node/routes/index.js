@@ -53,10 +53,16 @@ router.post('/execute', async function (req, res, next) {
   let jobj = JSON.parse(req.body);
 
   sql = jobj.sql;
-  const result = await pgclient.query(sql);
-  console.log("Executing: " +sql);
-
-  res.send(JSON.stringify(result.rows))
+  try {
+    const result = await pgclient.query(sql);
+    console.log("Executing: " +sql);
+    res.send(JSON.stringify(result.rows))
+  }
+  catch(e) {
+    console.log(e);
+    res.send(e);
+  }
+  
   res.statusCode = 200;
   res.end();
 });
