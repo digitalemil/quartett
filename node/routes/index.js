@@ -24,7 +24,7 @@ router.post('/datasource', function (req, res, next) {
     port: get("port", jobj, "5433"),
     user: get("user", jobj, "yugabyte"),
     password: get("password", jobj, "yugabyte"),
-    sslmode: "disable"
+    ssl: { rejectUnauthorized: false }
   };
 
   if (pool != null) {
@@ -33,7 +33,20 @@ router.post('/datasource', function (req, res, next) {
   pool = new pg.Pool(datasource);
   pool.connect(function (err, c, done) {
     if (err) {
-      console.error('could not connect to the db', err);
+      console.error('Could not connect to the db', err);
+      console.log("Trying without ssl.");
+      datasource.sslmode= "disable"
+      delete datasource.ssl;
+      pool = new pg.Pool(datasource);
+      pool.connect(function (err, c, done) {
+        if (err) {
+          console.error('Could not connect to the db', err);
+          console.log("Giving up");
+        }
+        else {
+          pgclient = c;
+        }
+      });
     }
     else {
       pgclient = c;
